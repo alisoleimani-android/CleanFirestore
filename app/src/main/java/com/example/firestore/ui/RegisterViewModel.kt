@@ -4,8 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.firestore.data.Collections
-import com.example.firestore.data.Person
+import com.example.firestore.data.model.Person
+import com.example.firestore.data.source.Collections
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers

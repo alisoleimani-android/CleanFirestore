@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.firestore.data.Person
+import com.example.firestore.data.model.Person
 import com.example.firestore.databinding.ItemPersonBinding
 
 class PersonsAdapter : ListAdapter<Person, PersonsAdapter.PersonViewHolder>(DiffUtils()) {

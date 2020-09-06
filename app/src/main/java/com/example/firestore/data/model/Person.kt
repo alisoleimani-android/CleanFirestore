@@ -1,4 +1,4 @@
-package com.example.firestore.data
+package com.example.firestore.data.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

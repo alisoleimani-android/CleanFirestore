@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.example.firestore.data.Person
+import com.example.firestore.data.model.Person
 import com.example.firestore.databinding.FragmentRegisterBinding
 import com.example.firestore.di.Injectable
 import javax.inject.Inject

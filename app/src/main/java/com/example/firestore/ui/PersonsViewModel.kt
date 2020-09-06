@@ -1,22 +1,27 @@
 package com.example.firestore.ui
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import com.example.firestore.data.Collections
-import com.example.firestore.data.Person
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
+import androidx.lifecycle.switchMap
+import com.example.firestore.data.repository.PersonRepository
 import javax.inject.Inject
 
-class PersonsViewModel @Inject constructor() : ViewModel() {
+class PersonsViewModel @Inject constructor(
+    repository: PersonRepository
+) : ViewModel() {
 
-    private val personsCollection = Firebase.firestore.collection(Collections.PERSONS)
+    private val _retrieve = MutableLiveData<Boolean>()
 
-    val persons = liveData(Dispatchers.IO) {
-        val persons: List<Person> = personsCollection.get().await().toObjects(Person::class.java)
-        emit(persons)
+    init {
+        retrieveData()
+    }
+
+    fun retrieveData() {
+        _retrieve.postValue(true)
+    }
+
+    val retrieveResult = _retrieve.switchMap {
+        repository.retrieveData()
     }
 
 }
