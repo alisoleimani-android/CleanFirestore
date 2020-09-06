@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_navigation"
+    app:startDestination="@id/persons_dest"
+    tools:ignore="UnusedNavigation">
+
+    <fragment
+        android:id="@+id/persons_dest"
+        android:name="com.example.firestore.ui.PersonsFragment"
+        android:label="PersonsFragment"
+        tools:layout="@layout/fragment_persons">
+
+        <action
+            android:id="@+id/action_register_dest"
+            app:destination="@id/register_dest" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_dest"
+        android:name="com.example.firestore.ui.RegisterFragment"
+        android:label="RegisterFragment"
+        tools:layout="@layout/fragment_register">
+
+        <argument
+            android:name="person"
+            app:argType="com.example.firestore.data.Person"
+            android:defaultValue="@null"
+            app:nullable="true" />
+
+    </fragment>
+
+</navigation>
