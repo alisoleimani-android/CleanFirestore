@@ -2,6 +2,7 @@ package com.example.firestore.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.firestore.data.model.Filter
 import com.example.firestore.data.model.Person
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.data.source.base.BaseDataSource
@@ -28,6 +29,15 @@ class AppDateSource @Inject constructor(
                 _snapshot.postValue(Result.Success(it.toObjects(Person::class.java)))
             }
         }
+    }
+
+    fun search(filter: Filter) = getResult {
+        personsRef
+            .whereEqualTo("firstName", filter.name)
+            .whereGreaterThan("age", filter.fromAge)
+            .whereLessThan("age", filter.toAge)
+            .orderBy("age")
+            .get().await().toObjects(Person::class.java)
     }
 
     fun addPerson(person: Person) = getResult {

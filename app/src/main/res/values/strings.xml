@@ -4,4 +4,7 @@
     <string name="last_name">Last Name</string>
     <string name="action_save">Save</string>
     <string name="age">Age</string>
+    <string name="action_filter">Filter</string>
+    <string name="to_age">To Age</string>
+    <string name="from_age">From Age</string>
 </resources>

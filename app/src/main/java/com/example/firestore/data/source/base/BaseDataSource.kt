@@ -1,5 +1,6 @@
 package com.example.firestore.data.source.base
 
+import android.util.Log
 import androidx.lifecycle.liveData
 import com.example.firestore.data.model.response.Result
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ abstract class BaseDataSource {
             }
 
         } catch (e: Exception) {
+            Log.i("A_S_R", e.toString())
             emit(Result.Error(e.message ?: e.toString()))
         }
     }

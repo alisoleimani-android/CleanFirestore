@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.firestore.data.model.Filter
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.databinding.FragmentPersonsBinding
 import com.example.firestore.di.Injectable
+import com.example.firestore.ui.utils.hide
+import com.example.firestore.ui.utils.show
 import javax.inject.Inject
 
 class PersonsFragment : Fragment(), Injectable {
@@ -37,6 +40,14 @@ class PersonsFragment : Fragment(), Injectable {
             btnAdd.setOnClickListener {
                 findNavController().navigate(PersonsFragmentDirections.actionRegisterDest())
             }
+
+            btnFilter.setOnClickListener {
+                FilterDialog.newInstance(object : FilterDialog.OnClickListener {
+                    override fun onFilterClicked(filter: Filter) {
+                        viewModel.filter.postValue(filter)
+                    }
+                }).show(childFragmentManager, "FilterDialog")
+            }
         }
 
         return mBinding.root
@@ -49,15 +60,33 @@ class PersonsFragment : Fragment(), Injectable {
 
     private fun subscribe() {
         viewModel.apply {
+
             resultOfSnapshot.observe(viewLifecycleOwner, { result ->
                 when (result) {
-
                     is Result.Success -> {
                         adapter.submitList(result.data)
                     }
 
                     is Result.Error -> {
                         Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+
+            filteredPersons.observe(viewLifecycleOwner, {
+                when (it) {
+                    is Result.Loading -> {
+                        mBinding.progressBar.show()
+                    }
+
+                    is Result.Success -> {
+                        mBinding.progressBar.hide()
+                        adapter.submitList(it.data)
+                    }
+
+                    is Result.Error -> {
+                        mBinding.progressBar.hide()
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             })
