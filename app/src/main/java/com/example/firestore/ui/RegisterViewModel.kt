@@ -1,38 +1,20 @@
 package com.example.firestore.ui
 
-import android.content.Context
-import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.switchMap
 import com.example.firestore.data.model.Person
-import com.example.firestore.data.source.Collections
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import com.example.firestore.data.repository.AppRepository
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
-    private val context: Context
+    private val repository: AppRepository
 ) : ViewModel() {
 
-    private val personsReference = Firebase.firestore.collection(Collections.PERSONS)
+    val addPerson = MutableLiveData<Person>()
 
-    fun addPerson(person: Person) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            personsReference.add(person).await()
-
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Successfully added to database", Toast.LENGTH_SHORT).show()
-            }
-
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-            }
-        }
-
+    val resultOfAddPerson = addPerson.switchMap {
+        repository.addPerson(it)
     }
+
 }

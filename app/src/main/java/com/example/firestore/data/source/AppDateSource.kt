@@ -12,8 +12,12 @@ class AppDateSource @Inject constructor(
     private val personsRef: CollectionReference
 ) : BaseDataSource() {
 
-    fun retrieveResult() = getResult {
+    fun retrieve() = getResult {
         personsRef.get().await().toObjects(Person::class.java)
+    }
+
+    fun addPerson(person: Person) = getResult {
+        personsRef.add(person).await()
     }
 
 }

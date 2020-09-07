@@ -12,16 +12,12 @@ class PersonsViewModel @Inject constructor(
 
     private val _retrieve = MutableLiveData<Boolean>()
 
-    init {
-        retrieveData()
-    }
-
-    fun retrieveData() {
-        _retrieve.postValue(true)
-    }
-
     val retrieveResult = _retrieve.switchMap {
-        repository.retrieveData()
+        repository.retrieve()
+    }
+
+    fun retrieve() {
+        _retrieve.postValue(true)
     }
 
 }

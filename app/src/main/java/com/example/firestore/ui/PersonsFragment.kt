@@ -41,7 +41,7 @@ class PersonsFragment : Fragment(), Injectable {
             }
 
             lytSwipeRefresh.setOnRefreshListener {
-                viewModel.retrieveData()
+                viewModel.retrieve()
             }
         }
 
@@ -51,6 +51,11 @@ class PersonsFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         subscribe()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.retrieve()
     }
 
     private fun subscribe() {
