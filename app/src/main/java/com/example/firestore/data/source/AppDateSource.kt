@@ -7,7 +7,7 @@ import com.google.firebase.firestore.CollectionReference
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class PersonDateSource @Inject constructor(
+class AppDateSource @Inject constructor(
     @PersonsReference
     private val personsRef: CollectionReference
 ) : BaseDataSource() {

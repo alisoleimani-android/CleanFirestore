@@ -3,11 +3,11 @@ package com.example.firestore.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
-import com.example.firestore.data.repository.PersonRepository
+import com.example.firestore.data.repository.AppRepository
 import javax.inject.Inject
 
 class PersonsViewModel @Inject constructor(
-    repository: PersonRepository
+    repository: AppRepository
 ) : ViewModel() {
 
     private val _retrieve = MutableLiveData<Boolean>()

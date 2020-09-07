@@ -1,12 +1,12 @@
 package com.example.firestore.data.repository
 
-import com.example.firestore.data.source.PersonDateSource
+import com.example.firestore.data.source.AppDateSource
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PersonRepository @Inject constructor(
-    private val source: PersonDateSource
+class AppRepository @Inject constructor(
+    private val source: AppDateSource
 ) {
 
     fun retrieveData() = source.retrieveResult()

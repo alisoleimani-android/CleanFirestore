@@ -1,6 +1,6 @@
 package com.example.firestore.di.module
 
-import com.example.firestore.data.source.PersonDateSource
+import com.example.firestore.data.source.AppDateSource
 import com.example.firestore.di.PersonsReference
 import com.google.firebase.firestore.CollectionReference
 import dagger.Module
@@ -14,6 +14,6 @@ class DataSourceModule {
     @Provides
     fun providePersonDataSource(
         @PersonsReference personsReference: CollectionReference
-    ) = PersonDateSource(personsReference)
+    ) = AppDateSource(personsReference)
 
 }
