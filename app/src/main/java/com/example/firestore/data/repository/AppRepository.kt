@@ -10,7 +10,7 @@ class AppRepository @Inject constructor(
     private val source: AppDateSource
 ) {
 
-    fun retrieve() = source.retrieve()
+    val resultOfSnapshot = source.resultOfSnapshot
 
     fun addPerson(person: Person) = source.addPerson(person)
 

@@ -12,8 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.databinding.FragmentPersonsBinding
 import com.example.firestore.di.Injectable
-import com.example.firestore.ui.utils.hide
-import com.example.firestore.ui.utils.show
 import javax.inject.Inject
 
 class PersonsFragment : Fragment(), Injectable {
@@ -39,10 +37,6 @@ class PersonsFragment : Fragment(), Injectable {
             btnAdd.setOnClickListener {
                 findNavController().navigate(PersonsFragmentDirections.actionRegisterDest())
             }
-
-            lytSwipeRefresh.setOnRefreshListener {
-                viewModel.retrieve()
-            }
         }
 
         return mBinding.root
@@ -53,26 +47,16 @@ class PersonsFragment : Fragment(), Injectable {
         subscribe()
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.retrieve()
-    }
-
     private fun subscribe() {
         viewModel.apply {
-            retrieveResult.observe(viewLifecycleOwner, { result ->
+            resultOfSnapshot.observe(viewLifecycleOwner, { result ->
                 when (result) {
-                    is Result.Loading -> {
-                        mBinding.lytSwipeRefresh.show()
-                    }
 
                     is Result.Success -> {
-                        mBinding.lytSwipeRefresh.hide()
                         adapter.submitList(result.data)
                     }
 
                     is Result.Error -> {
-                        mBinding.lytSwipeRefresh.hide()
                         Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
                     }
                 }
