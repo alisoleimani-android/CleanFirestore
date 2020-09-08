@@ -37,11 +37,15 @@ class AppDateSource @Inject constructor(
             .whereGreaterThan("age", filter.fromAge)
             .whereLessThan("age", filter.toAge)
             .orderBy("age")
-            .get().await().toObjects(Person::class.java)
+            .get()
+            .await()
+            .toObjects(Person::class.java)
     }
 
     fun addPerson(person: Person) = getResult {
-        personsRef.add(person).await()
+        personsRef
+            .add(person)
+            .await()
     }
 
 }

@@ -44,7 +44,7 @@ class PersonsFragment : Fragment(), Injectable {
             btnFilter.setOnClickListener {
                 FilterDialog.newInstance(object : FilterDialog.OnClickListener {
                     override fun onFilterClicked(filter: Filter) {
-                        viewModel.filter.postValue(filter)
+                        viewModel.setFilter(filter)
                     }
                 }).show(childFragmentManager, "FilterDialog")
             }
@@ -80,13 +80,25 @@ class PersonsFragment : Fragment(), Injectable {
                     }
 
                     is Result.Success -> {
-                        mBinding.progressBar.hide()
-                        adapter.submitList(it.data)
+                        if (viewModel.filterObservable) {
+                            mBinding.progressBar.hide()
+
+                            // Submitting list of items to RecyclerView
+                            adapter.submitList(it.data)
+
+                            viewModel.filterObservable = false
+                        }
                     }
 
                     is Result.Error -> {
-                        mBinding.progressBar.hide()
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        if (viewModel.filterObservable) {
+                            mBinding.progressBar.hide()
+
+                            // Showing errors
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+
+                            viewModel.filterObservable = false
+                        }
                     }
                 }
             })

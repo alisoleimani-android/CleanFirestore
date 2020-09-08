@@ -11,10 +11,17 @@ class PersonsViewModel @Inject constructor(
     repository: AppRepository
 ) : ViewModel() {
 
+    var filterObservable = false
+
     val resultOfSnapshot = repository.resultOfSnapshot
 
-    val filter = MutableLiveData<Filter>()
+    private val _filter = MutableLiveData<Filter>()
 
-    val filteredPersons = filter.switchMap { repository.search(it) }
+    val filteredPersons = _filter.switchMap { repository.search(it) }
+
+    fun setFilter(filter: Filter) {
+        filterObservable = true
+        _filter.value = filter
+    }
 
 }
