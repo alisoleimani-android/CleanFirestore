@@ -24,9 +24,14 @@ class PersonsFragment : Fragment(), Injectable {
 
     private val viewModel: PersonsViewModel by viewModels { viewModelFactory }
 
-    private val adapter = PersonsAdapter { person ->
-        findNavController().navigate(PersonsFragmentDirections.actionRegisterDest(person))
-    }
+    private val adapter = PersonsAdapter(
+        onItemClicked = { person ->
+            findNavController().navigate(PersonsFragmentDirections.actionRegisterDest(person))
+        },
+        onDeleteItemClicked = { person ->
+            viewModel.deletePerson(person)
+        }
+    )
 
     private lateinit var mBinding: FragmentPersonsBinding
 
@@ -100,6 +105,38 @@ class PersonsFragment : Fragment(), Injectable {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
 
                             viewModel.filterObservable = false
+                        }
+                    }
+                }
+            })
+
+            resultOfDeletePerson.observe(viewLifecycleOwner, {
+                when (it) {
+                    is Result.Loading -> {
+                        mBinding.progressBar.show()
+                    }
+
+                    is Result.Success -> {
+                        if (viewModel.deleteObservable) {
+                            mBinding.progressBar.hide()
+
+                            Toast.makeText(
+                                requireContext(),
+                                "Successfully Deleted",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            viewModel.deleteObservable = false
+                        }
+                    }
+
+                    is Result.Error -> {
+                        if (viewModel.deleteObservable) {
+                            mBinding.progressBar.hide()
+
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+
+                            viewModel.deleteObservable = false
                         }
                     }
                 }

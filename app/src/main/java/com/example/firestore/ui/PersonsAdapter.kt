@@ -10,7 +10,11 @@ import com.example.firestore.data.model.Person
 import com.example.firestore.databinding.ItemPersonBinding
 
 class PersonsAdapter(
-    private val onItemClicked: (person: Person) -> Unit
+
+    private val onItemClicked: (person: Person) -> Unit,
+
+    private val onDeleteItemClicked: (person: Person) -> Unit
+
 ) : ListAdapter<Person, PersonsAdapter.PersonViewHolder>(DiffUtils()) {
 
     class DiffUtils : DiffUtil.ItemCallback<Person>() {
@@ -30,8 +34,14 @@ class PersonsAdapter(
     ) : RecyclerView.ViewHolder(mBinding.root) {
 
         init {
-            mBinding.root.setOnClickListener {
-                onItemClicked(getItem(adapterPosition))
+            mBinding.apply {
+                root.setOnClickListener {
+                    onItemClicked(getItem(adapterPosition))
+                }
+
+                btnDelete.setOnClickListener {
+                    onDeleteItemClicked(getItem(adapterPosition))
+                }
             }
         }
 
@@ -42,11 +52,13 @@ class PersonsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
-        return PersonViewHolder(ItemPersonBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        ))
+        return PersonViewHolder(
+            ItemPersonBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {

@@ -9,6 +9,7 @@ import com.example.firestore.data.model.response.Result
 import com.example.firestore.data.source.base.BaseDataSource
 import com.example.firestore.di.PersonsReference
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class AppDateSource @Inject constructor(
         }
     }
 
-    fun search(filter: Filter) = getResult {
+    fun search(filter: Filter): LiveData<Result<List<Person>>> = getResult {
         personsRef
             .whereEqualTo("firstName", filter.name)
             .whereGreaterThan("age", filter.fromAge)
@@ -44,13 +45,13 @@ class AppDateSource @Inject constructor(
             .toObjects(Person::class.java)
     }
 
-    fun addPerson(person: Person) = getResult {
+    fun addPerson(person: Person): LiveData<Result<DocumentReference>> = getResult {
         personsRef
             .add(person)
             .await()
     }
 
-    fun updatePerson(model: UpdatePersonModel) = getResult {
+    fun updatePerson(model: UpdatePersonModel): LiveData<Result<Unit>> = getResult {
         val personQuery = personsRef
             .whereEqualTo("firstName", model.person.firstName)
             .whereEqualTo("lastName", model.person.lastName)
@@ -59,6 +60,18 @@ class AppDateSource @Inject constructor(
             .await()
         personQuery.documents.firstOrNull()?.let {
             personsRef.document(it.id).set(model.changesMap, SetOptions.merge()).await()
+        }
+    }
+
+    fun deletePerson(person: Person): LiveData<Result<Unit>> = getResult {
+        val personQuery = personsRef
+            .whereEqualTo("firstName", person.firstName)
+            .whereEqualTo("lastName", person.lastName)
+            .whereEqualTo("age", person.age)
+            .get()
+            .await()
+        personQuery.documents.firstOrNull()?.let {
+            personsRef.document(it.id).delete().await()
         }
     }
 

@@ -14,15 +14,11 @@ class RegisterViewModel @Inject constructor(
 
     private val _addPerson = MutableLiveData<Person>()
 
-    val resultOfAddPerson = _addPerson.switchMap {
-        repository.addPerson(it)
-    }
+    val resultOfAddPerson = _addPerson.switchMap { repository.addPerson(it) }
 
     private val _updatePerson = MutableLiveData<UpdatePersonModel>()
 
-    val resultOfUpdatePerson = _updatePerson.switchMap {
-        repository.updatePerson(it)
-    }
+    val resultOfUpdatePerson = _updatePerson.switchMap { repository.updatePerson(it) }
 
     fun updatePerson(person: Person, firstName: String, lastName: String, age: String) {
         val changes = mutableMapOf<String, Any>()

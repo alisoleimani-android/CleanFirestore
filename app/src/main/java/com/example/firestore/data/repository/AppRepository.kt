@@ -18,6 +18,8 @@ class AppRepository @Inject constructor(
 
     fun updatePerson(model: UpdatePersonModel) = source.updatePerson(model)
 
+    fun deletePerson(person: Person) = source.deletePerson(person)
+
     fun search(filter: Filter) = source.search(filter)
 
 }

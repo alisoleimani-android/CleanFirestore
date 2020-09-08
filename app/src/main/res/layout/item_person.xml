@@ -18,24 +18,41 @@
         android:layout_margin="2dp">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                tools:text="Ali Soleimani"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:text="@{person.firstName + ` ` + person.lastName}"/>
+                android:layout_weight="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Age : 26"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:text="@{`Age : ` + person.age}"
-                android:layout_marginTop="8dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Ali Soleimani"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:text="@{person.firstName + ` ` + person.lastName}"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Age : 26"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:text="@{`Age : ` + person.age}"
+                    android:layout_marginTop="8dp"/>
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/colorSecondary"
+                android:background="?selectableItemBackgroundBorderless"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
