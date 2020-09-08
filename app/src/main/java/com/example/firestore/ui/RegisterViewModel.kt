@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import com.example.firestore.data.model.Person
-import com.example.firestore.data.model.UpdatePersonModel
 import com.example.firestore.data.repository.AppRepository
 import javax.inject.Inject
 
@@ -16,7 +15,7 @@ class RegisterViewModel @Inject constructor(
 
     val resultOfAddPerson = _addPerson.switchMap { repository.addPerson(it) }
 
-    private val _updatePerson = MutableLiveData<UpdatePersonModel>()
+    private val _updatePerson = MutableLiveData<UpdatePerson>()
 
     val resultOfUpdatePerson = _updatePerson.switchMap { repository.updatePerson(it) }
 
@@ -35,11 +34,16 @@ class RegisterViewModel @Inject constructor(
             changes["age"] = age.toInt()
         }
 
-        _updatePerson.value = UpdatePersonModel(person, changes)
+        _updatePerson.value = UpdatePerson(person, changes)
     }
 
     fun addNewPerson(firstName: String, lastName: String, age: String) {
         _addPerson.value = Person(firstName, lastName, age.toInt())
     }
+
+    data class UpdatePerson(
+        val person: Person,
+        val changesMap: Map<String, Any>
+    )
 
 }

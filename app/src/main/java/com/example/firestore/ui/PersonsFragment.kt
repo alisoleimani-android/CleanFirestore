@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.firestore.data.model.Filter
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.databinding.FragmentPersonsBinding
 import com.example.firestore.di.Injectable
@@ -28,8 +27,17 @@ class PersonsFragment : Fragment(), Injectable {
         onItemClicked = { person ->
             findNavController().navigate(PersonsFragmentDirections.actionRegisterDest(person))
         },
+
         onDeleteItemClicked = { person ->
             viewModel.deletePerson(person)
+        },
+
+        onIncreaseAge = { person ->
+            viewModel.increaseOrDecreaseValueOfAge(person, 1)
+        },
+
+        onDecreaseAge = { person ->
+            viewModel.increaseOrDecreaseValueOfAge(person, -1)
         }
     )
 
@@ -50,7 +58,7 @@ class PersonsFragment : Fragment(), Injectable {
 
             btnFilter.setOnClickListener {
                 FilterDialog.newInstance(object : FilterDialog.OnClickListener {
-                    override fun onFilterClicked(filter: Filter) {
+                    override fun onFilterClicked(filter: PersonsViewModel.Filter) {
                         viewModel.setFilter(filter)
                     }
                 }).show(childFragmentManager, "FilterDialog")
@@ -137,6 +145,38 @@ class PersonsFragment : Fragment(), Injectable {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
 
                             viewModel.deleteObservable = false
+                        }
+                    }
+                }
+            })
+
+            resultOfIncreaseOrDecreaseAge.observe(viewLifecycleOwner, {
+                when (it) {
+                    is Result.Loading -> {
+                        mBinding.progressBar.show()
+                    }
+
+                    is Result.Success -> {
+                        if (viewModel.increaseOrDecreaseObservable) {
+                            mBinding.progressBar.hide()
+
+                            Toast.makeText(
+                                requireContext(),
+                                "Successfully Changed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            viewModel.increaseOrDecreaseObservable = false
+                        }
+                    }
+
+                    is Result.Error -> {
+                        if (viewModel.increaseOrDecreaseObservable) {
+                            mBinding.progressBar.hide()
+
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+
+                            viewModel.increaseOrDecreaseObservable = false
                         }
                     }
                 }

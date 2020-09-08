@@ -1,9 +1,9 @@
 package com.example.firestore.data.repository
 
-import com.example.firestore.data.model.Filter
 import com.example.firestore.data.model.Person
-import com.example.firestore.data.model.UpdatePersonModel
 import com.example.firestore.data.source.AppDateSource
+import com.example.firestore.ui.PersonsViewModel
+import com.example.firestore.ui.RegisterViewModel
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,10 +16,13 @@ class AppRepository @Inject constructor(
 
     fun addPerson(person: Person) = source.addPerson(person)
 
-    fun updatePerson(model: UpdatePersonModel) = source.updatePerson(model)
+    fun updatePerson(model: RegisterViewModel.UpdatePerson) = source.updatePerson(model)
 
     fun deletePerson(person: Person) = source.deletePerson(person)
 
-    fun search(filter: Filter) = source.search(filter)
+    fun increaseOrDecreaseValueOfAge(model: PersonsViewModel.IncreaseOrDecrease) =
+        source.increaseOrDecreaseAge(model)
+
+    fun search(filter: PersonsViewModel.Filter) = source.search(filter)
 
 }

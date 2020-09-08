@@ -13,7 +13,11 @@ class PersonsAdapter(
 
     private val onItemClicked: (person: Person) -> Unit,
 
-    private val onDeleteItemClicked: (person: Person) -> Unit
+    private val onDeleteItemClicked: (person: Person) -> Unit,
+
+    private val onIncreaseAge: (person: Person) -> Unit,
+
+    private val onDecreaseAge: (person: Person) -> Unit
 
 ) : ListAdapter<Person, PersonsAdapter.PersonViewHolder>(DiffUtils()) {
 
@@ -41,6 +45,14 @@ class PersonsAdapter(
 
                 btnDelete.setOnClickListener {
                     onDeleteItemClicked(getItem(adapterPosition))
+                }
+
+                btnPlus.setOnClickListener {
+                    onIncreaseAge(getItem(adapterPosition))
+                }
+
+                btnMinus.setOnClickListener {
+                    onDecreaseAge(getItem(adapterPosition))
                 }
             }
         }

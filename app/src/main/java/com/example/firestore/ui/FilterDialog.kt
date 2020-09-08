@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.example.firestore.R
-import com.example.firestore.data.model.Filter
 import kotlinx.android.synthetic.main.dialog_filter.*
 
 class FilterDialog : DialogFragment() {
@@ -33,7 +32,7 @@ class FilterDialog : DialogFragment() {
 
         btnFilter.setOnClickListener {
             mListener.onFilterClicked(
-                Filter(
+                PersonsViewModel.Filter(
                     name = edFirstName.text.toString(),
                     fromAge = try {
                         edFromAge.text.toString().toInt()
@@ -53,7 +52,7 @@ class FilterDialog : DialogFragment() {
     }
 
     interface OnClickListener {
-        fun onFilterClicked(filter: Filter)
+        fun onFilterClicked(filter: PersonsViewModel.Filter)
     }
 
 }

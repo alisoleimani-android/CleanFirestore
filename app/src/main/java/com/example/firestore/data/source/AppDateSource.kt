@@ -2,15 +2,17 @@ package com.example.firestore.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.firestore.data.model.Filter
 import com.example.firestore.data.model.Person
-import com.example.firestore.data.model.UpdatePersonModel
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.data.source.base.BaseDataSource
 import com.example.firestore.di.PersonsReference
+import com.example.firestore.ui.PersonsViewModel
+import com.example.firestore.ui.RegisterViewModel
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -34,7 +36,7 @@ class AppDateSource @Inject constructor(
         }
     }
 
-    fun search(filter: Filter): LiveData<Result<List<Person>>> = getResult {
+    fun search(filter: PersonsViewModel.Filter): LiveData<Result<List<Person>>> = getResult {
         personsRef
             .whereEqualTo("firstName", filter.name)
             .whereGreaterThan("age", filter.fromAge)
@@ -46,33 +48,36 @@ class AppDateSource @Inject constructor(
     }
 
     fun addPerson(person: Person): LiveData<Result<DocumentReference>> = getResult {
-        personsRef
-            .add(person)
-            .await()
+        personsRef.add(person).await()
     }
 
-    fun updatePerson(model: UpdatePersonModel): LiveData<Result<Unit>> = getResult {
-        val personQuery = personsRef
-            .whereEqualTo("firstName", model.person.firstName)
-            .whereEqualTo("lastName", model.person.lastName)
-            .whereEqualTo("age", model.person.age)
-            .get()
-            .await()
-        personQuery.documents.firstOrNull()?.let {
-            personsRef.document(it.id).set(model.changesMap, SetOptions.merge()).await()
+    fun updatePerson(model: RegisterViewModel.UpdatePerson): LiveData<Result<Unit>> =
+        getResult {
+            getDocumentOfPerson(model.person)?.set(model.changesMap, SetOptions.merge())?.await()
         }
-    }
 
     fun deletePerson(person: Person): LiveData<Result<Unit>> = getResult {
+        getDocumentOfPerson(person)?.delete()?.await()
+    }
+
+    fun increaseOrDecreaseAge(model: PersonsViewModel.IncreaseOrDecrease) = getResult {
+        val id = getDocumentOfPerson(model.person)?.id ?: return@getResult
+
+        Firebase.firestore.runTransaction { transaction ->
+            val personRef = personsRef.document(id)
+            val person = transaction.get(personRef)
+            val newAge = person["age"] as Long + model.value
+            transaction.update(personRef, "age", newAge)
+        }.await()
+    }
+
+    private suspend fun getDocumentOfPerson(person: Person): DocumentReference? {
         val personQuery = personsRef
             .whereEqualTo("firstName", person.firstName)
             .whereEqualTo("lastName", person.lastName)
             .whereEqualTo("age", person.age)
             .get()
             .await()
-        personQuery.documents.firstOrNull()?.let {
-            personsRef.document(it.id).delete().await()
-        }
+        return personsRef.document(personQuery.documents.firstOrNull()?.id ?: return null)
     }
-
 }

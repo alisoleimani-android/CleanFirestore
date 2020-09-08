@@ -35,13 +35,43 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:text="@{person.firstName + ` ` + person.lastName}"/>
 
-                <TextView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Age : 26"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:text="@{`Age : ` + person.age}"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="8dp">
+
+                    <ImageButton
+                        android:id="@+id/btnPlus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_add_circle"
+                        android:tint="@color/colorSecondary"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        tools:text="Age : 26"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:text="@{`Age : ` + person.age}" />
+
+                    <ImageButton
+                        android:id="@+id/btnMinus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_remove_circle"
+                        android:tint="@color/colorSecondary"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        tools:ignore="ContentDescription" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
