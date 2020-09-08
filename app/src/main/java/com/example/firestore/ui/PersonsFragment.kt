@@ -24,7 +24,9 @@ class PersonsFragment : Fragment(), Injectable {
 
     private val viewModel: PersonsViewModel by viewModels { viewModelFactory }
 
-    private val adapter = PersonsAdapter()
+    private val adapter = PersonsAdapter { person ->
+        findNavController().navigate(PersonsFragmentDirections.actionRegisterDest(person))
+    }
 
     private lateinit var mBinding: FragmentPersonsBinding
 

@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.firestore.data.model.Person
 import com.example.firestore.databinding.ItemPersonBinding
 
-class PersonsAdapter : ListAdapter<Person, PersonsAdapter.PersonViewHolder>(DiffUtils()) {
+class PersonsAdapter(
+    private val onItemClicked: (person: Person) -> Unit
+) : ListAdapter<Person, PersonsAdapter.PersonViewHolder>(DiffUtils()) {
 
     class DiffUtils : DiffUtil.ItemCallback<Person>() {
         override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
@@ -23,9 +25,16 @@ class PersonsAdapter : ListAdapter<Person, PersonsAdapter.PersonViewHolder>(Diff
         }
     }
 
-    class PersonViewHolder(
+    inner class PersonViewHolder(
         private val mBinding: ItemPersonBinding
     ) : RecyclerView.ViewHolder(mBinding.root) {
+
+        init {
+            mBinding.root.setOnClickListener {
+                onItemClicked(getItem(adapterPosition))
+            }
+        }
+
         fun bind(person: Person) {
             mBinding.person = person
             mBinding.executePendingBindings()

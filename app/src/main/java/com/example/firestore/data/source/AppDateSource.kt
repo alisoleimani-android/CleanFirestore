@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.firestore.data.model.Filter
 import com.example.firestore.data.model.Person
+import com.example.firestore.data.model.UpdatePersonModel
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.data.source.base.BaseDataSource
 import com.example.firestore.di.PersonsReference
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -46,6 +48,18 @@ class AppDateSource @Inject constructor(
         personsRef
             .add(person)
             .await()
+    }
+
+    fun updatePerson(model: UpdatePersonModel) = getResult {
+        val personQuery = personsRef
+            .whereEqualTo("firstName", model.person.firstName)
+            .whereEqualTo("lastName", model.person.lastName)
+            .whereEqualTo("age", model.person.age)
+            .get()
+            .await()
+        personQuery.documents.firstOrNull()?.let {
+            personsRef.document(it.id).set(model.changesMap, SetOptions.merge()).await()
+        }
     }
 
 }

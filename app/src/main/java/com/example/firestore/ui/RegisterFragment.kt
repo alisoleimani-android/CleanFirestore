@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.firestore.data.model.Person
+import androidx.navigation.fragment.navArgs
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.databinding.FragmentRegisterBinding
 import com.example.firestore.di.Injectable
@@ -26,6 +26,8 @@ class RegisterFragment : Fragment(), Injectable {
 
     private lateinit var mBinding: FragmentRegisterBinding
 
+    val args  by navArgs<RegisterFragmentArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,14 +40,27 @@ class RegisterFragment : Fragment(), Injectable {
 
                 mBinding.root.clearFocus()
 
-                viewModel.addPerson.postValue(
-                    Person(
-                        firstName = edFirstName.text.toString(),
-                        lastName = edLastName.text.toString(),
-                        age = edAge.text.toString().toInt()
+                if (args.person == null) {
+
+                    viewModel.addNewPerson(
+                        edFirstName.text.toString(),
+                        edLastName.text.toString(),
+                        edAge.text.toString()
                     )
-                )
+
+                } else {
+
+                    viewModel.updatePerson(
+                        args.person!!,
+                        edFirstName.text.toString(),
+                        edLastName.text.toString(),
+                        edAge.text.toString()
+                    )
+
+                }
             }
+
+            person = args.person
 
         }
 
@@ -67,6 +82,24 @@ class RegisterFragment : Fragment(), Injectable {
 
                     is Result.Success -> {
                         Toast.makeText(requireContext(), "Added Successfully", Toast.LENGTH_SHORT).show()
+                        findNavController().navigateUp()
+                    }
+
+                    is Result.Error -> {
+                        mBinding.progressBar.hide()
+                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+
+            resultOfUpdatePerson.observe(viewLifecycleOwner, { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        mBinding.progressBar.show()
+                    }
+
+                    is Result.Success -> {
+                        Toast.makeText(requireContext(), "Updated Successfully", Toast.LENGTH_SHORT).show()
                         findNavController().navigateUp()
                     }
 
