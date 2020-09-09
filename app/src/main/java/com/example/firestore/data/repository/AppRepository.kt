@@ -8,9 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppRepository @Inject constructor(
-    private val source: AppDateSource
-) {
+class AppRepository @Inject constructor(private val source: AppDateSource) {
 
     val resultOfSnapshot = source.resultOfSnapshot
 
