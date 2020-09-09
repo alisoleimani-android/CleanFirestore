@@ -101,8 +101,7 @@ class PersonsFragment : Fragment(), Injectable {
                 }
             })
 
-            filteredPersons.observe(viewLifecycleOwner, EventObserver {
-                // Submitting list of items to RecyclerView
+            onListFiltered.observe(viewLifecycleOwner, EventObserver {
                 adapter.submitList(it)
             })
 

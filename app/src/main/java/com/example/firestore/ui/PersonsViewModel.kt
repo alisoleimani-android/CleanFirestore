@@ -12,7 +12,7 @@ class PersonsViewModel @Inject constructor(repository: AppRepository) : BaseView
     val snapshot = repository.resultOfSnapshot
 
     private val _filter = MutableLiveData<Filter>()
-    val filteredPersons = _filter.switchMap {
+    val onListFiltered = _filter.switchMap {
         watchResult { repository.search(it) }
     }
 
