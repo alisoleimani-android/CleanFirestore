@@ -6,6 +6,4 @@ sealed class Result<T> {
 
     data class Error<T>(val message: String?) : Result<T>()
 
-    data class Loading<T>(val message: String? = null) : Result<T>()
-
 }
