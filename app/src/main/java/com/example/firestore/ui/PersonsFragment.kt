@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.firestore.data.model.response.Result
 import com.example.firestore.databinding.FragmentPersonsBinding
 import com.example.firestore.di.Injectable
+import com.example.firestore.ui.base.EventObserver
 import com.example.firestore.ui.utils.hide
 import com.example.firestore.ui.utils.show
 import javax.inject.Inject
@@ -76,7 +77,19 @@ class PersonsFragment : Fragment(), Injectable {
     private fun subscribe() {
         viewModel.apply {
 
-            resultOfSnapshot.observe(viewLifecycleOwner, { result ->
+            progress.observe(viewLifecycleOwner, EventObserver { showProgress ->
+                if (showProgress) {
+                    mBinding.progressBar.show()
+                } else {
+                    mBinding.progressBar.hide()
+                }
+            })
+
+            error.observe(viewLifecycleOwner, EventObserver { error ->
+                Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()
+            })
+
+            snapshot.observe(viewLifecycleOwner, { result ->
                 when (result) {
                     is Result.Success -> {
                         adapter.submitList(result.data)
@@ -88,98 +101,25 @@ class PersonsFragment : Fragment(), Injectable {
                 }
             })
 
-            filteredPersons.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Result.Loading -> {
-                        mBinding.progressBar.show()
-                    }
-
-                    is Result.Success -> {
-                        if (viewModel.filterObservable) {
-                            mBinding.progressBar.hide()
-
-                            // Submitting list of items to RecyclerView
-                            adapter.submitList(it.data)
-
-                            viewModel.filterObservable = false
-                        }
-                    }
-
-                    is Result.Error -> {
-                        if (viewModel.filterObservable) {
-                            mBinding.progressBar.hide()
-
-                            // Showing errors
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-
-                            viewModel.filterObservable = false
-                        }
-                    }
-                }
+            filteredPersons.observe(viewLifecycleOwner, EventObserver {
+                // Submitting list of items to RecyclerView
+                adapter.submitList(it)
             })
 
-            resultOfDeletePerson.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Result.Loading -> {
-                        mBinding.progressBar.show()
-                    }
-
-                    is Result.Success -> {
-                        if (viewModel.deleteObservable) {
-                            mBinding.progressBar.hide()
-
-                            Toast.makeText(
-                                requireContext(),
-                                "Successfully Deleted",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            viewModel.deleteObservable = false
-                        }
-                    }
-
-                    is Result.Error -> {
-                        if (viewModel.deleteObservable) {
-                            mBinding.progressBar.hide()
-
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-
-                            viewModel.deleteObservable = false
-                        }
-                    }
-                }
+            onPersonDeleted.observe(viewLifecycleOwner, EventObserver {
+                Toast.makeText(
+                    requireContext(),
+                    "Successfully Deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
             })
 
-            resultOfIncreaseOrDecreaseAge.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Result.Loading -> {
-                        mBinding.progressBar.show()
-                    }
-
-                    is Result.Success -> {
-                        if (viewModel.increaseOrDecreaseObservable) {
-                            mBinding.progressBar.hide()
-
-                            Toast.makeText(
-                                requireContext(),
-                                "Successfully Changed",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            viewModel.increaseOrDecreaseObservable = false
-                        }
-                    }
-
-                    is Result.Error -> {
-                        if (viewModel.increaseOrDecreaseObservable) {
-                            mBinding.progressBar.hide()
-
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-
-                            viewModel.increaseOrDecreaseObservable = false
-                        }
-                    }
-                }
+            onAgeChanged.observe(viewLifecycleOwner, EventObserver {
+                Toast.makeText(
+                    requireContext(),
+                    "Successfully Changed",
+                    Toast.LENGTH_SHORT
+                ).show()
             })
         }
     }

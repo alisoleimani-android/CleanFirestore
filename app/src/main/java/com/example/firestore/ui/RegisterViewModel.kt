@@ -1,23 +1,25 @@
 package com.example.firestore.ui
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import com.example.firestore.data.model.Person
 import com.example.firestore.data.repository.AppRepository
+import com.example.firestore.ui.base.BaseViewModel
 import javax.inject.Inject
 
 class RegisterViewModel @Inject constructor(
     private val repository: AppRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _addPerson = MutableLiveData<Person>()
-
-    val resultOfAddPerson = _addPerson.switchMap { repository.addPerson(it) }
+    val onPersonAddedSuccessfully = _addPerson.switchMap {
+        watchResult { repository.addPerson(it) }
+    }
 
     private val _updatePerson = MutableLiveData<UpdatePerson>()
-
-    val resultOfUpdatePerson = _updatePerson.switchMap { repository.updatePerson(it) }
+    val onPersonUpdatedSuccessfully = _updatePerson.switchMap {
+        watchResult { repository.updatePerson(it) }
+    }
 
     fun updatePerson(person: Person, firstName: String, lastName: String, age: String) {
         val changes = mutableMapOf<String, Any>()

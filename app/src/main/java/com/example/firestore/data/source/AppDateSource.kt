@@ -36,7 +36,7 @@ class AppDateSource @Inject constructor(
         }
     }
 
-    fun search(filter: PersonsViewModel.Filter): LiveData<Result<List<Person>>> = getResult {
+    suspend fun search(filter: PersonsViewModel.Filter) = getResult {
         personsRef
             .whereEqualTo("firstName", filter.name)
             .whereGreaterThan("age", filter.fromAge)
@@ -47,20 +47,19 @@ class AppDateSource @Inject constructor(
             .toObjects(Person::class.java)
     }
 
-    fun addPerson(person: Person): LiveData<Result<DocumentReference>> = getResult {
+    suspend fun addPerson(person: Person) = getResult {
         personsRef.add(person).await()
     }
 
-    fun updatePerson(model: RegisterViewModel.UpdatePerson): LiveData<Result<Unit>> =
-        getResult {
-            getDocumentOfPerson(model.person)?.set(model.changesMap, SetOptions.merge())?.await()
-        }
+    suspend fun updatePerson(model: RegisterViewModel.UpdatePerson) = getResult {
+        getDocumentOfPerson(model.person)?.set(model.changesMap, SetOptions.merge())?.await()
+    }
 
-    fun deletePerson(person: Person): LiveData<Result<Unit>> = getResult {
+    suspend fun deletePerson(person: Person) = getResult {
         getDocumentOfPerson(person)?.delete()?.await()
     }
 
-    fun increaseOrDecreaseAge(model: PersonsViewModel.IncreaseOrDecrease) = getResult {
+    suspend fun increaseOrDecreaseAge(model: PersonsViewModel.IncreaseOrDecrease) = getResult {
         val id = getDocumentOfPerson(model.person)?.id ?: return@getResult
 
         Firebase.firestore.runTransaction { transaction ->

@@ -1,43 +1,41 @@
 package com.example.firestore.ui
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import com.example.firestore.data.model.Person
 import com.example.firestore.data.repository.AppRepository
+import com.example.firestore.ui.base.BaseViewModel
 import javax.inject.Inject
 
-class PersonsViewModel @Inject constructor(repository: AppRepository) : ViewModel() {
+class PersonsViewModel @Inject constructor(repository: AppRepository) : BaseViewModel() {
 
-    var filterObservable = false
-    var deleteObservable = false
-    var increaseOrDecreaseObservable = false
-
-    val resultOfSnapshot = repository.resultOfSnapshot
+    val snapshot = repository.resultOfSnapshot
 
     private val _filter = MutableLiveData<Filter>()
-    val filteredPersons = _filter.switchMap { repository.search(it) }
+    val filteredPersons = _filter.switchMap {
+        watchResult { repository.search(it) }
+    }
 
     private val _deletePerson = MutableLiveData<Person>()
-    val resultOfDeletePerson = _deletePerson.switchMap { repository.deletePerson(it) }
+    val onPersonDeleted = _deletePerson.switchMap {
+        watchResult { repository.deletePerson(it) }
+    }
 
     private val _changeValueOfAge = MutableLiveData<IncreaseOrDecrease>()
-    val resultOfIncreaseOrDecreaseAge =
-        _changeValueOfAge.switchMap { repository.increaseOrDecreaseValueOfAge(it) }
+    val onAgeChanged = _changeValueOfAge.switchMap {
+        watchResult { repository.increaseOrDecreaseValueOfAge(it) }
+    }
 
 
     fun increaseOrDecreaseValueOfAge(person: Person, value: Int) {
-        increaseOrDecreaseObservable = true
         _changeValueOfAge.value = IncreaseOrDecrease(person, value)
     }
 
     fun setFilter(filter: Filter) {
-        filterObservable = true
         _filter.value = filter
     }
 
     fun deletePerson(person: Person) {
-        deleteObservable = true
         _deletePerson.value = person
     }
 

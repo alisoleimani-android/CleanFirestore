@@ -14,15 +14,15 @@ class AppRepository @Inject constructor(
 
     val resultOfSnapshot = source.resultOfSnapshot
 
-    fun addPerson(person: Person) = source.addPerson(person)
+    suspend fun addPerson(person: Person) = source.addPerson(person)
 
-    fun updatePerson(model: RegisterViewModel.UpdatePerson) = source.updatePerson(model)
+    suspend fun updatePerson(model: RegisterViewModel.UpdatePerson) = source.updatePerson(model)
 
-    fun deletePerson(person: Person) = source.deletePerson(person)
+    suspend fun deletePerson(person: Person) = source.deletePerson(person)
 
-    fun increaseOrDecreaseValueOfAge(model: PersonsViewModel.IncreaseOrDecrease) =
+    suspend fun increaseOrDecreaseValueOfAge(model: PersonsViewModel.IncreaseOrDecrease) =
         source.increaseOrDecreaseAge(model)
 
-    fun search(filter: PersonsViewModel.Filter) = source.search(filter)
+    suspend fun search(filter: PersonsViewModel.Filter) = source.search(filter)
 
 }

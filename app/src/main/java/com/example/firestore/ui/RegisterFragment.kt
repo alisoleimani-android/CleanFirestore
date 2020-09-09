@@ -10,9 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.firestore.data.model.response.Result
 import com.example.firestore.databinding.FragmentRegisterBinding
 import com.example.firestore.di.Injectable
+import com.example.firestore.ui.base.EventObserver
 import com.example.firestore.ui.utils.hide
 import com.example.firestore.ui.utils.show
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class RegisterFragment : Fragment(), Injectable {
 
     private lateinit var mBinding: FragmentRegisterBinding
 
-    val args  by navArgs<RegisterFragmentArgs>()
+    private val args by navArgs<RegisterFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,40 +74,27 @@ class RegisterFragment : Fragment(), Injectable {
 
     private fun subscribe() {
         viewModel.apply {
-            resultOfAddPerson.observe(viewLifecycleOwner, { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        mBinding.progressBar.show()
-                    }
 
-                    is Result.Success -> {
-                        Toast.makeText(requireContext(), "Added Successfully", Toast.LENGTH_SHORT).show()
-                        findNavController().navigateUp()
-                    }
-
-                    is Result.Error -> {
-                        mBinding.progressBar.hide()
-                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
-                    }
+            progress.observe(viewLifecycleOwner, EventObserver { showProgress ->
+                if (showProgress) {
+                    mBinding.progressBar.show()
+                } else {
+                    mBinding.progressBar.hide()
                 }
             })
 
-            resultOfUpdatePerson.observe(viewLifecycleOwner, { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        mBinding.progressBar.show()
-                    }
+            error.observe(viewLifecycleOwner, EventObserver {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+            })
 
-                    is Result.Success -> {
-                        Toast.makeText(requireContext(), "Updated Successfully", Toast.LENGTH_SHORT).show()
-                        findNavController().navigateUp()
-                    }
+            onPersonAddedSuccessfully.observe(viewLifecycleOwner, EventObserver {
+                Toast.makeText(requireContext(), "Added Successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            })
 
-                    is Result.Error -> {
-                        mBinding.progressBar.hide()
-                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
+            onPersonUpdatedSuccessfully.observe(viewLifecycleOwner, EventObserver {
+                Toast.makeText(requireContext(), "Updated Successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
             })
         }
     }
