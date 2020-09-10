@@ -1,7 +1,7 @@
 # Firestore
 A useful sample project for who wants to use Firestore with clean architecture.
 
-## How implemented ?
+## How did i implement this project ?
 I used **MVVM architecture** with **LiveData-ViewModel**, **Kotlin-Coroutines**, **Dagger2** and **Navigation-Component**
 for transaction between fragments.
 
