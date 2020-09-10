@@ -16,6 +16,13 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+/**
+ * This class provides data for repository by transactions on a [CollectionReference].
+ * @property personsRef, a collection reference which is related to our Person Collection
+ *
+ * @author Ali Soleimani
+ * @since 10th September 2020
+ */
 class AppDateSource @Inject constructor(
     @PersonsReference
     private val personsRef: CollectionReference

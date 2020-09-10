@@ -8,6 +8,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 
+/**
+ * We define collection provider here with their specific qualifier.
+ */
+
 @Module
 class CollectionsModule {
 

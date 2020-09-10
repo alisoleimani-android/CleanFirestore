@@ -7,6 +7,14 @@ import com.example.firestore.ui.RegisterViewModel
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * This class provides data for ViewModel. It's a connection between
+ * ViewModel and data sources.
+ * @property source, the app's remote data source
+ *
+ * @author Ali Soleimani
+ * @since 10th September 2020
+ */
 @Singleton
 class AppRepository @Inject constructor(private val source: AppDateSource) {
 
